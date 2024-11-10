@@ -58,29 +58,52 @@ function App() {
         const otherPlayer = player === 1 ? 2 : 1;
 
         for (let line of lines) {
-            const otherPlayerArray = []
-            const emptyArray = []
-            const samePlayerArray = []
-            for(let cell of line){
-                if(squaresCopy[cell[0]][cell[1]] === otherPlayer){
+            const otherPlayerArray = [];
+            const emptyArray = [];
+            const samePlayerArray = [];
+
+            for (let cell of line) {
+                if (squaresCopy[cell[0]][cell[1]] === otherPlayer) {
                     otherPlayerArray.push(cell);
-                }else if(squaresCopy[cell[0]][cell[1]] === 0){
-                    emptyArray.push(cell)
-                }else if(squaresCopy[cell[0]][cell[1]] === player){
-                    samePlayerArray.push(cell)
+                } else if (squaresCopy[cell[0]][cell[1]] === 0) {
+                    emptyArray.push(cell);
+                } else if (squaresCopy[cell[0]][cell[1]] === player) {
+                    samePlayerArray.push(cell);
                 }
             }
-            if ((samePlayerArray.length === 2 && emptyArray.length)){
+
+            // Check if the AI can win in the next move
+            if (samePlayerArray.length === 2 && emptyArray.length === 1) {
                 squaresCopy[emptyArray[0][0]][emptyArray[0][1]] = player;
-                return squaresCopy;
+                return squaresCopy; // Return immediately if a winning move is found
             }
-            if ((otherPlayerArray.length === 2 && emptyArray.length)){
+
+            // Check if the opponent could win in the next move, and block them
+            if (otherPlayerArray.length === 2 && emptyArray.length === 1) {
                 squaresCopy[emptyArray[0][0]][emptyArray[0][1]] = player;
-                return squaresCopy;
+                return squaresCopy; // Return immediately if a blocking move is found
             }
-            if (samePlayerArray.length && emptyArray.length && !otherPlayerArray.length){
+        }
+
+        // Make a strategic move if no immediate win or block is available
+        for (let line of lines) {
+            const otherPlayerArray = [];
+            const emptyArray = [];
+            const samePlayerArray = [];
+
+            for (let cell of line) {
+                if (squaresCopy[cell[0]][cell[1]] === otherPlayer) {
+                    otherPlayerArray.push(cell);
+                } else if (squaresCopy[cell[0]][cell[1]] === 0) {
+                    emptyArray.push(cell);
+                } else if (squaresCopy[cell[0]][cell[1]] === player) {
+                    samePlayerArray.push(cell);
+                }
+            }
+
+            if (samePlayerArray.length > 0 && emptyArray.length > 0 && otherPlayerArray.length === 0) {
                 squaresCopy[emptyArray[0][0]][emptyArray[0][1]] = player;
-                return squaresCopy;
+                return squaresCopy; // Return immediately if a strategic move is found
             }
         }
 
